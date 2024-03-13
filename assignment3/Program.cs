@@ -147,28 +147,42 @@ void DisplayMemoryValues(string[] dates, double[] values, int logicalSize)
 double FindHighestValueInMemory(double[] values, int logicalSize)
 {
 	double highest = values[0];
-	for (int i = 0; i > logicalSize; i++)
+	for (int i = 0; i < logicalSize; i++)
 	{
 		if (values[i] > highest)
 		{
 			highest = values[i];
 		}
 	}
-	Console.WriteLine($"Highest value is {highest}");
+	Console.WriteLine($"\nHighest value is {highest}");
 	return highest;
 	//TODO: Replace this code with yours to implement this function.
 }
 
 double FindLowestValueInMemory(double[] values, int logicalSize)
 {
-	Console.WriteLine("Not Implemented Yet");
-	return 0;
+		double lowest = values[0];
+	for (int i = 0; i < logicalSize; i++)
+	{
+		if (values[i] < lowest)
+		{
+			lowest = values[i];
+		}
+	}
+	Console.WriteLine($"\nLowest value is {lowest}");
+	return lowest;
 	//TODO: Replace this code with yours to implement this function.
 }
 
 void FindAverageOfValuesInMemory(double[] values, int logicalSize)
 {
-	Console.WriteLine("Not Implemented Yet");
+		double sum = 0;
+	for (int i = 0; i < logicalSize; i++)
+	{
+		sum += values[i];
+	}
+	double average = sum / logicalSize; 
+	Console.WriteLine($"\naverage value is {average}");
 	//TODO: Replace this code with yours to implement this function.
 }
 
@@ -180,7 +194,13 @@ void SaveMemoryValuesToFile(string filename, string[] dates, double[] values, in
 
 int AddMemoryValues(string[] dates, double[] values, int logicalSize)
 {
-	Console.WriteLine("Not Implemented Yet");
+	
+	
+	Console.Write("Enter the date(mm-dd-yyyy) and value you want to add");
+	Console.ReadLine();
+	double.Parse(Console.ReadLine());
+	
+
 	return 0;
 	//TODO: Replace this code with yours to implement this function.
 }
