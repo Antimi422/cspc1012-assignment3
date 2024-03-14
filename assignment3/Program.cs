@@ -2,6 +2,9 @@
 // TODO: declare a constant to represent the max size of the sales
 // and dates arrays. The arrays must be large enough to store
 // sales for an entire month.
+using System.Collections.Immutable;
+using System.ComponentModel.DataAnnotations;
+
 int physicalSize = 31;
 int logicalSize = 0;
 
@@ -161,7 +164,7 @@ double FindHighestValueInMemory(double[] values, int logicalSize)
 
 double FindLowestValueInMemory(double[] values, int logicalSize)
 {
-		double lowest = values[0];
+	double lowest = values[0];
 	for (int i = 0; i < logicalSize; i++)
 	{
 		if (values[i] < lowest)
@@ -176,32 +179,86 @@ double FindLowestValueInMemory(double[] values, int logicalSize)
 
 void FindAverageOfValuesInMemory(double[] values, int logicalSize)
 {
-		double sum = 0;
+	double sum = 0;
 	for (int i = 0; i < logicalSize; i++)
 	{
 		sum += values[i];
 	}
-	double average = sum / logicalSize; 
+	double average = sum / logicalSize;
 	Console.WriteLine($"\naverage value is {average}");
 	//TODO: Replace this code with yours to implement this function.
 }
 
 void SaveMemoryValuesToFile(string filename, string[] dates, double[] values, int logicalSize)
 {
+
 	Console.WriteLine("Not Implemented Yet");
 	//TODO: Replace this code with yours to implement this function.
 }
 
+string PromptDate(string Prompt)
+{
+	string date = "";
+	bool invalidInput = true;
+	while (invalidInput)
+	{
+		try
+		{
+			Console.Write($"{Prompt}");	
+			date = Console.ReadLine();
+			DateTime.ParseExact(date, "MM-dd-yyyy", null);
+			invalidInput = false;
+		}
+		catch (FormatException)
+		{
+			Console.WriteLine($"Invalid datetime format");
+		}
+	}
+	return date;
+}
+
+double PrompDoubleBetweenMinMax(string msg, double min, double max)
+{
+	double number = 0;
+	bool invalidInput = true;
+	while (invalidInput)
+	{
+		try
+		{
+			Console.Write($"{msg} between {min} and {max}: ");
+			number = double.Parse(Console.ReadLine());
+			if (number <= 0 || number >= 1000)
+			{
+				throw new Exception($"Number must be between {min} and {max}");
+			}
+			invalidInput = false;
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Invalid: {ex.Message}");
+		}
+	}
+	return number;
+}
+
+
 int AddMemoryValues(string[] dates, double[] values, int logicalSize)
 {
-	
-	
-	Console.Write("Enter the date(mm-dd-yyyy) and value you want to add");
-	Console.ReadLine();
-	double.Parse(Console.ReadLine());
-	
+	double value = 0;
+	string dateString = "";
 
-	return 0;
+	dateString = PromptDate("Enterdate format mm-dd-yyyy (e.g 11-23-2023): ");
+	bool found = false;
+	for (int i = 0; i < logicalSize; i++)
+		if (dates[i].Equals(dateString))
+			found = true;
+	if (found == true)
+		throw new Exception($"{dateString} is already in memory. Edit entry instead.");
+	value = PrompDoubleBetweenMinMax($"Enter a double value", 0.0, 1000.0);
+	dates[logicalSize] = dateString;
+	values[logicalSize] = value;
+	logicalSize++;
+	return logicalSize;
 	//TODO: Replace this code with yours to implement this function.
 }
 
