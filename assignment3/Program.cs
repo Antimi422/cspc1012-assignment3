@@ -138,7 +138,7 @@ void DisplayMemoryValues(string[] dates, double[] values, int logicalSize)
 {
 	if (logicalSize == 0)
 		throw new Exception($"No Entries loaded. Please load a file to memory or add a value in memory");
-	Console.Clear();
+	Array.Sort(dates, values, 0, logicalSize);
 	Console.WriteLine($"\nCurrent Loaded Entries:  {logicalSize}\n");
 	Console.WriteLine("{0,-15} {1,10:}\n", "Date", "Value");
 	for (int i = 0; i < logicalSize; i++)
@@ -159,7 +159,6 @@ double FindHighestValueInMemory(double[] values, int logicalSize)
 	}
 	Console.WriteLine($"\nHighest value is {highest}");
 	return highest;
-	//TODO: Replace this code with yours to implement this function.
 }
 
 double FindLowestValueInMemory(double[] values, int logicalSize)
@@ -174,7 +173,6 @@ double FindLowestValueInMemory(double[] values, int logicalSize)
 	}
 	Console.WriteLine($"\nLowest value is {lowest}");
 	return lowest;
-	//TODO: Replace this code with yours to implement this function.
 }
 
 void FindAverageOfValuesInMemory(double[] values, int logicalSize)
@@ -186,7 +184,7 @@ void FindAverageOfValuesInMemory(double[] values, int logicalSize)
 	}
 	double average = sum / logicalSize;
 	Console.WriteLine($"\naverage value is {average}");
-	//TODO: Replace this code with yours to implement this function.
+
 }
 
 void SaveMemoryValuesToFile(string filename, string[] dates, double[] values, int logicalSize)
@@ -227,7 +225,7 @@ double PrompDoubleBetweenMinMax(string msg, double min, double max)
 		{
 			Console.Write($"{msg} between {min} and {max}: ");
 			number = double.Parse(Console.ReadLine());
-			if (number <= 0 || number >= 1000)
+			if (number <= min || number >= max)
 			{
 				throw new Exception($"Number must be between {min} and {max}");
 			}
@@ -259,13 +257,28 @@ int AddMemoryValues(string[] dates, double[] values, int logicalSize)
 	values[logicalSize] = value;
 	logicalSize++;
 	return logicalSize;
-	//TODO: Replace this code with yours to implement this function.
 }
 
 void EditMemoryValues(string[] dates, double[] values, int logicalSize)
 {
-	Console.WriteLine("Not Implemented Yet");
-	//TODO: Replace this code with yours to implement this function.
+	double value = 0.0;
+	string dateString = "";
+	int foundIndex = 0;
+	bool found = false;
+
+	if(logicalSize == 0)
+		throw new Exception($"No Entries found, please load a file or add a value in memory.");
+	dateString = PromptDate("Enterdate format mm-dd-yyyy (e.g 11-23-2023): ");
+	for (int i = 0; i < logicalSize; i++)
+		if (dates[i].Equals(dateString))
+		{
+			found = true;
+			foundIndex = i;
+		}
+	if(found == false)
+		throw new Exception($"{dateString} is not in memory. Add entry instead.");
+	value = PrompDoubleBetweenMinMax($"Enter a double value", 0.0, 1000.0);
+	values[foundIndex] = value;
 }
 
 void GraphValuesInMemory(string[] dates, double[] values, int logicalSize)
