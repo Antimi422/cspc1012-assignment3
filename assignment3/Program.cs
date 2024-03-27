@@ -4,9 +4,15 @@
 // sales for an entire month.
 using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
+using System.Data.Common;
+using System.Globalization;
+using System.Net;
+using System.Numerics;
 
 int physicalSize = 31;
 int logicalSize = 0;
+double maxValue = 100;
+double minValue = 0;
 
 // TODO: create a double array named 'values', use the max size constant you declared
 // above to specify the physical size of the array.
@@ -28,7 +34,7 @@ while (goAgain)
 		if (mainMenuChoice == "L")
 			logicalSize = LoadFileValuesToMemory(fileName, dates, values);
 		if (mainMenuChoice == "S")
-			SaveMemoryValuesToFile(fileName, dates, values, logicalSize);
+			SaveMemoryValuesToFile(dates, values, logicalSize);
 		if (mainMenuChoice == "D")
 			DisplayMemoryValues(dates, values, logicalSize);
 		if (mainMenuChoice == "A")
@@ -187,11 +193,23 @@ void FindAverageOfValuesInMemory(double[] values, int logicalSize)
 
 }
 
-void SaveMemoryValuesToFile(string filename, string[] dates, double[] values, int logicalSize)
+void SaveMemoryValuesToFile(string[] dates, double[] values, int logicalSize)
 {
 
-	Console.WriteLine("Not Implemented Yet");
-	//TODO: Replace this code with yours to implement this function.
+	string filename = GetFileName();
+	string filePath = $"./data/{filename}";
+	if (logicalSize == 0)
+		throw new Exception("No entry loaded, please load a file to memory or add.");
+	if (logicalSize > 1)
+		Array.Sort(dates, values, 0, logicalSize);
+	string[] csvLines = new string[logicalSize + 1];
+	csvLines[0] = "dates,values";
+	for (int i = 0; i < logicalSize; i++)
+	{
+		csvLines[i + 1] = $"{dates[i]},{values[i]}";
+	}
+	File.WriteAllLines(filePath, csvLines);
+	Console.WriteLine($"Save complete. {fileName} has {logicalSize} data entries");
 }
 
 string PromptDate(string Prompt)
@@ -202,7 +220,7 @@ string PromptDate(string Prompt)
 	{
 		try
 		{
-			Console.Write($"{Prompt}");	
+			Console.Write($"{Prompt}");
 			date = Console.ReadLine();
 			DateTime.ParseExact(date, "MM-dd-yyyy", null);
 			invalidInput = false;
@@ -252,7 +270,7 @@ int AddMemoryValues(string[] dates, double[] values, int logicalSize)
 			found = true;
 	if (found == true)
 		throw new Exception($"{dateString} is already in memory. Edit entry instead.");
-	value = PrompDoubleBetweenMinMax($"Enter a double value", 0.0, 1000.0);
+	value = PrompDoubleBetweenMinMax($"Enter a double value", minValue, maxValue);
 	dates[logicalSize] = dateString;
 	values[logicalSize] = value;
 	logicalSize++;
@@ -266,7 +284,7 @@ void EditMemoryValues(string[] dates, double[] values, int logicalSize)
 	int foundIndex = 0;
 	bool found = false;
 
-	if(logicalSize == 0)
+	if (logicalSize == 0)
 		throw new Exception($"No Entries found, please load a file or add a value in memory.");
 	dateString = PromptDate("Enterdate format mm-dd-yyyy (e.g 11-23-2023): ");
 	for (int i = 0; i < logicalSize; i++)
@@ -275,14 +293,58 @@ void EditMemoryValues(string[] dates, double[] values, int logicalSize)
 			found = true;
 			foundIndex = i;
 		}
-	if(found == false)
+	if (found == false)
 		throw new Exception($"{dateString} is not in memory. Add entry instead.");
-	value = PrompDoubleBetweenMinMax($"Enter a double value", 0.0, 1000.0);
+	value = PrompDoubleBetweenMinMax($"Enter a double value", minValue, maxValue);
 	values[foundIndex] = value;
 }
 
 void GraphValuesInMemory(string[] dates, double[] values, int logicalSize)
 {
-	Console.WriteLine("Not Implemented Yet");
+	double minValue = 0;
+	double yAxisMaxValue = maxValue;
+	double yAxisSubract = 10;
+	string[] dateMonthYear = dates[0].Split("-");
+	string month = dateMonthYear[0];
+	string year = dateMonthYear[2];
+	string line = "";
+	Console.WriteLine($"--------sales of {month} {year}--------");
+	Console.Write("Dollars");
+	for (double row = yAxisMaxValue; row >= minValue; row -= yAxisSubract)
+	{
+		Console.Write($"\n{row,4} |");
+		for (int i = 0; i < physicalSize; i++)
+		{
+			string formatDays = i.ToString("00");
+			int dayIndex = Array.IndexOf(dates, $"{month}-{formatDays}-{year}");
+			if (dayIndex != -1)
+			{
+				if (values[dayIndex] >= row && values[dayIndex] <= (row + 9))
+				{
+					line += $"{values[dayIndex],3}";
+				}
+				else
+				{
+					line += $"{" ",3}";
+				}
+			}
+		}
+		Console.WriteLine($"{line}");
+		line = "";
+	}
+	Console.WriteLine("");
+	string lines = "------";
+	string days = "";
+	for (int col = 1; col <= physicalSize; col++)
+	{
+		string date = col.ToString("00");
+		lines += "---";
+		days += $"{date,3}";
+	}
+	Console.WriteLine($"{lines}");
+	Console.Write("Date |");
+	Console.Write($"{days}");
+
+	// 
 	//TODO: Replace this code with yours to implement this function.
 }
