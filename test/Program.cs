@@ -298,27 +298,25 @@ void EditMemoryValues(string[] dates, double[] values, int logicalSize)
 
 void GraphValuesInMemory(string[] dates, double[] values, int logicalSize)
 {
-    double minValue = 0;
-    double yAxisMaxValue = 100;
+    double maxValue = 100;
+    double minValue = 0; 
     double yAxisSubtract = 10;
-    string[] dateMonthYear = dates[0].Split("-");
+    string[] dateMonthYear = dates[0].Split('-');
     string month = dateMonthYear[0];
     string year = dateMonthYear[2];
 
-    Console.WriteLine($"--------sales of {month} {year}--------");
+    Console.WriteLine($"--------Sales of {month}-{year}--------");
     Console.WriteLine("Dollars");
-
-    for (double row = yAxisMaxValue; row >= minValue; row -= yAxisSubtract)
+    for (double row = maxValue; row >= minValue; row -= yAxisSubtract)
     {
-        Console.Write($"{row,4} |");
-
-        for (int day = 1; day <= physicalSize; day++) 
+        Console.Write($"{row,8} |");
+        for (int day = 1; day <= 31; day++) 
         {
-            string dayFormatted = day.ToString("00");
-            string dateToFind = $"{month}-{dayFormatted}-{year}";
-            int dayIndex = Array.FindIndex(dates, date => date == dateToFind);
+            string formatDay = day.ToString("00");
+            string dateToFind = $"{month}-{formatDay}-{year}";
+            int dayIndex = Array.IndexOf(dates, dateToFind);
 
-            if (dayIndex != -1 && values[dayIndex] >= row && values[dayIndex] < row + yAxisSubtract)
+            if (dayIndex != -1 && values[dayIndex] >= row - yAxisSubtract && values[dayIndex] < row)
             {
                 Console.Write($"{values[dayIndex],3}");
             }
@@ -327,20 +325,16 @@ void GraphValuesInMemory(string[] dates, double[] values, int logicalSize)
                 Console.Write("   ");
             }
         }
-
         Console.WriteLine();
     }
 
-	string lines = "------";
-	string days = "";
-	for (int col = 1; col <= physicalSize; col++)
+    Console.WriteLine(new string('-', 10 + 31 * 3));  
+    Console.Write("Date     |");
+	
+    for (int day = 1; day <= 31; day++) 
 	{
-		string date = col.ToString("00");
-		lines += "---";
-		days += $"{date,3}";
-	}
-	Console.WriteLine($"{lines}");
-	Console.Write("Date |");
-	Console.Write($"{days}");
-
+		string formatDay = day.ToString("00");
+        Console.Write($"{formatDay,3}");
+    }
+    Console.WriteLine();
 }

@@ -301,50 +301,41 @@ void EditMemoryValues(string[] dates, double[] values, int logicalSize)
 
 void GraphValuesInMemory(string[] dates, double[] values, int logicalSize)
 {
-	double minValue = 0;
-	double yAxisMaxValue = maxValue;
-	double yAxisSubract = 10;
-	string[] dateMonthYear = dates[0].Split("-");
-	string month = dateMonthYear[0];
-	string year = dateMonthYear[2];
-	string line = "";
-	Console.WriteLine($"--------sales of {month} {year}--------");
-	Console.Write("Dollars");
-	for (double row = yAxisMaxValue; row >= minValue; row -= yAxisSubract)
-	{
-		Console.Write($"\n{row,4} |");
-		for (int i = 0; i < physicalSize; i++)
-		{
-			string formatDays = i.ToString("00");
-			int dayIndex = Array.IndexOf(dates, $"{month}-{formatDays}-{year}");
-			if (dayIndex != -1)
-			{
-				if (values[dayIndex] >= row && values[dayIndex] <= (row + 9))
-				{
-					line += $"{values[dayIndex],3}";
-				}
-				else
-				{
-					line += $"{" ",3}";
-				}
-			}
-		}
-		Console.WriteLine($"{line}");
-		line = "";
-	}
-	Console.WriteLine("");
-	string lines = "------";
-	string days = "";
-	for (int col = 1; col <= physicalSize; col++)
-	{
-		string date = col.ToString("00");
-		lines += "---";
-		days += $"{date,3}";
-	}
-	Console.WriteLine($"{lines}");
-	Console.Write("Date |");
-	Console.Write($"{days}");
+    double yAxisSubtract = 10;
+    string[] dateMonthYear = dates[0].Split('-');
+    string month = dateMonthYear[0];
+    string year = dateMonthYear[2];
 
-	// 
-	//TODO: Replace this code with yours to implement this function.
+    Console.WriteLine($"--------Sales of {month}-{year}--------");
+    Console.WriteLine("Dollars");
+    for (double row = maxValue; row >= minValue; row -= yAxisSubtract)
+    {
+        Console.Write($"{row,8} |");
+        for (int day = 1; day <= 31; day++) 
+        {
+            string formatDay = day.ToString("00");
+            string dateToFind = $"{month}-{formatDay}-{year}";
+            int dayIndex = Array.IndexOf(dates, dateToFind);
+
+            if (dayIndex != -1 && values[dayIndex] >= row - yAxisSubtract && values[dayIndex] < row)
+            {
+                Console.Write($"{values[dayIndex],3}");
+            }
+            else
+            {
+                Console.Write("   ");
+            }
+        }
+        Console.WriteLine();
+    }
+
+    Console.WriteLine(new string('-', 10 + 31 * 3));  
+    Console.Write("Date     |");
+	
+    for (int day = 1; day <= 31; day++) 
+	{
+		string formatDay = day.ToString("00");
+        Console.Write($"{formatDay,3}");
+    }
+    Console.WriteLine();
 }
